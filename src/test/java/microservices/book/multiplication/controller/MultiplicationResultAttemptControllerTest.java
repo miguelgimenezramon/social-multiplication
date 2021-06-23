@@ -39,11 +39,32 @@ public class MultiplicationResultAttemptControllerTest {
 	// This object will be magically initialized by the initFields method below.
 	private JacksonTester<MultiplicationResultAttempt> jsonResult;
 	private JacksonTester<ResultResponse> jsonResponse;
+	
+	private JacksonTester<MultiplicationResultAttempt> jsonResultAttempt;
+	private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
 
 	@Before
 	public void setup() {
 		JacksonTester.initFields(this, new ObjectMapper());
 	}
+	@Test
+	public void getUserStats() throws Exception {
+		// given
+		User user = new User("john_doe");
+		Multiplication multiplication = new Multiplication(50, 70);
+	
+		MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, true);
+		List<MultiplicationResultAttempt> recentAttempts = Lists.newArrayList(attempt, attempt);
+		given(multiplicationService.getStatsForUser("john_doe")).willReturn(recentAttempts);
+	
+		// when
+		MockHttpServletResponse response = mvc.perform(get("/results").param("alias", "john_doe")).andReturn().getResponse();
+	
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.getContentAsString()).isEqualTo(jsonResultAttemptList.write(recentAttempts).getJson());
+	}
+	
 	@Test
 	public void postResultReturnCorrect() throws Exception {
 		genericParameterizedTest(true);
@@ -68,6 +89,7 @@ public class MultiplicationResultAttemptControllerTest {
 												.andReturn().getResponse();
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		
 		assertThat(response.getContentAsString()).isEqualTo(
 				jsonResult.write(
 				new MultiplicationResultAttempt(attempt.
@@ -76,5 +98,6 @@ public class MultiplicationResultAttemptControllerTest {
 				attempt.getResultAttempt(),
 				correct)
 				).getJson());
-		}
+	}
 }
+
