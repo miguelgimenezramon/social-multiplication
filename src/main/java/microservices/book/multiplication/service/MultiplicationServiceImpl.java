@@ -2,6 +2,8 @@ package microservices.book.multiplication.service;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispacher;
+import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 
@@ -19,6 +21,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	private RandomGeneratorService randomGeneratorService;
 	private MultiplicationResultAttemptRepository attemptRepository;
 	private UserRepository userRepository;
+	private EventDispacher eventDispacher;
 
 	@Autowired
 	public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService, 
@@ -56,6 +59,11 @@ class MultiplicationServiceImpl implements MultiplicationService {
 					);
 		// Stores the attempt
 		attemptRepository.save(checkedAttempt);
+		
+		//Enviamos el mensaje
+		eventDispacher.send(new MultiplicationSolvedEvent(checkedAttempt.getId(), 
+				checkedAttempt.getUser().getId(), isCorrect));
+		
 		return isCorrect;
 	}
 	
