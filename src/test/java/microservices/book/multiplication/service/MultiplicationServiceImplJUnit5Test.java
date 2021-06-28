@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 
@@ -30,12 +31,15 @@ public class MultiplicationServiceImplJUnit5Test {
 
     @Mock
     private UserRepository userRepository;
+    
+	@Mock
+	private EventDispatcher eventDispatcher;
 
     @BeforeAll
     public void setUp() {
         // With this call to initMocks we tell Mockito to process the annotations
         MockitoAnnotations.openMocks(this);
-        multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository);
+        multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository, eventDispatcher);
     }
     
     @Test

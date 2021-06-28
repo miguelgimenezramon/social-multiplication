@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +29,12 @@ final class MultiplicationResultAttemptController {
 	}
 	
 	// Here we'll implement our POST later
-	@RequiredArgsConstructor
-	@NoArgsConstructor(force = true)
-	@Getter
-	public static final class ResultResponse {
-		private final boolean correct;
-	}
+//	@RequiredArgsConstructor
+//	@NoArgsConstructor(force = true)
+//	@Getter
+//	public static final class ResultResponse {
+//		private final boolean correct;
+//	}
 	
 	@PostMapping
 	ResponseEntity<MultiplicationResultAttempt> postResult(@RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
@@ -46,5 +47,12 @@ final class MultiplicationResultAttemptController {
 	ResponseEntity<List<MultiplicationResultAttempt>> getStatistics(@RequestParam("alias") String alias) {
 		return ResponseEntity.ok(multiplicationService.getStatsForUser(alias));
 	}
+	
+	@GetMapping("/{resultId}")
+    ResponseEntity<MultiplicationResultAttempt> getResultById(final @PathVariable("resultId") Long resultId) {
+        return ResponseEntity.ok(
+                multiplicationService.getResultById(resultId)
+        );
+    }
 }
 

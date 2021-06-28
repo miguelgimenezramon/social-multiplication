@@ -1,11 +1,6 @@
 package microservices.book.multiplication.service;
-import microservices.book.multiplication.domain.Multiplication;
-import microservices.book.multiplication.domain.MultiplicationResultAttempt;
-import microservices.book.multiplication.domain.User;
-import microservices.book.multiplication.event.EventDispacher;
-import microservices.book.multiplication.event.MultiplicationSolvedEvent;
-import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
-import microservices.book.multiplication.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -13,23 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
+import microservices.book.multiplication.domain.Multiplication;
+import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
+import microservices.book.multiplication.event.MultiplicationSolvedEvent;
+import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.UserRepository;
 @Service
 class MultiplicationServiceImpl implements MultiplicationService {
 
 	private RandomGeneratorService randomGeneratorService;
 	private MultiplicationResultAttemptRepository attemptRepository;
 	private UserRepository userRepository;
-	private EventDispacher eventDispacher;
+	private EventDispatcher eventDispatcher;
 
 	@Autowired
 	public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService, 
 			final MultiplicationResultAttemptRepository attemptRepository, 
-			final UserRepository userRepository) {
+			final UserRepository userRepository,
+			final EventDispatcher eventDispatcher) {
 		this.randomGeneratorService = randomGeneratorService;
 		this.attemptRepository = attemptRepository;
 		this.userRepository = userRepository;
+		this.eventDispatcher = eventDispatcher;
 	}
 	
 	@Override
@@ -61,7 +63,7 @@ class MultiplicationServiceImpl implements MultiplicationService {
 		attemptRepository.save(checkedAttempt);
 		
 		//Enviamos el mensaje
-		eventDispacher.send(new MultiplicationSolvedEvent(checkedAttempt.getId(), 
+		eventDispatcher.send(new MultiplicationSolvedEvent(checkedAttempt.getId(), 
 				checkedAttempt.getUser().getId(), isCorrect));
 		
 		return isCorrect;
@@ -71,5 +73,14 @@ class MultiplicationServiceImpl implements MultiplicationService {
 	public List<MultiplicationResultAttempt> getStatsForUser(String userAlias) {
 		return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
 	}
+
+	@Override
+	public MultiplicationResultAttempt getResultById(final Long resultId) {
+		// TODO Auto-generated method stub
+		Optional<MultiplicationResultAttempt> attempCopy = attemptRepository.findById(resultId);
+		return attempCopy.get();
+	}
+	
+	
 }
 

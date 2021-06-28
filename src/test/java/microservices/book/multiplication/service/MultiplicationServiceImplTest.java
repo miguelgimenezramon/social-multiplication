@@ -3,6 +3,7 @@ import microservices.book.multiplication.domain.Multiplication;
 import org.assertj.core.util.Lists;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
 
@@ -27,12 +28,15 @@ public class MultiplicationServiceImplTest {
 
 	@Mock
 	private UserRepository userRepository;
+	
+	@Mock
+	private EventDispatcher eventDispatcher;
 
 	@Before
 	public void setUp() {
 		// With this call to initMocks we tell Mockito to process the annotations
 		MockitoAnnotations.initMocks(this);
-		multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository);
+		multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository, eventDispatcher);
 	}
 	
 	@Test

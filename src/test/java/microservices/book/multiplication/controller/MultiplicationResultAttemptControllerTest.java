@@ -26,7 +26,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import microservices.book.multiplication.controller.MultiplicationResultAttemptController.ResultResponse;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(MultiplicationResultAttemptController.class)
@@ -38,7 +37,6 @@ public class MultiplicationResultAttemptControllerTest {
 	private MockMvc mvc;
 	// This object will be magically initialized by the initFields method below.
 	private JacksonTester<MultiplicationResultAttempt> jsonResult;
-	private JacksonTester<ResultResponse> jsonResponse;
 	
 	private JacksonTester<MultiplicationResultAttempt> jsonResultAttempt;
 	private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
