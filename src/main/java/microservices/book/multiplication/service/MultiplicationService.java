@@ -14,9 +14,11 @@ public interface MultiplicationService {
 	* @return true if the attempt matches the result of the
 	* multiplication, false otherwise.
 	*/
-	boolean checkAttempt(final MultiplicationResultAttempt resultAttempt);
+	MultiplicationResultAttempt checkAttempt(final MultiplicationResultAttempt resultAttempt);
 	
 	public List<MultiplicationResultAttempt> getStatsForUser(String userAlias);
 	
 	public MultiplicationResultAttempt getResultById(Long resultId);
+	
+	
 }
